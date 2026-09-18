@@ -1,0 +1,1 @@
+</main><footer><div><strong>ScaleUp LATAM & Europe</strong><p>Estratégia acadêmica de marketing, vendas e dados para expansão internacional.</p></div><div>Projeto 22782 · Desafio 163241<br>Equipe: Adriano Godoy, Gabryel Rodrigues e Guilherme dos Santos</div><a href="admin/login.php">Acesso administrativo →</a></footer></body></html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Scale Up Global - LATAM & Europa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-6">
+
+    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl max-w-md w-full border border-slate-700">
+        <h2 class="text-2xl font-bold mb-2 text-center text-emerald-400">Scale Up Global</h2>
+        <p class="text-sm text-slate-400 text-center mb-6">Expansão de Vendas LATAM & Europa</p>
+
+        <form id="leadForm" class="space-y-4">
+            <div>
+                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Nome Completo</label>
+                <input type="text" id="nome" required placeholder="Digite seu nome"
+                    class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-emerald-400">
+            </div>
+
+            <div>
+                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">E-mail Corporativo</label>
+                <input type="email" id="email" required placeholder="nome@empresa.com"
+                    class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-emerald-400">
+            </div>
+
+            <div class="grid grid-cols-3 gap-2">
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">DDI</label>
+                    <input type="text" id="ddi" value="+55"
+                        class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-center focus:outline-none">
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Telefone</label>
+                    <input type="text" id="telefone" placeholder="11999998888"
+                        class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-emerald-400">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">País de Interesse</label>
+                <select id="pais"
+                    class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-emerald-400">
+                    <option value="BR">Brasil (LATAM)</option>
+                    <option value="MX">México (LATAM)</option>
+                    <option value="ES">Espanha (Europa)</option>
+                    <option value="DE">Alemanha (Europa)</option>
+                </select>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-lg transition duration-200 mt-2">
+                Enviar Cadastro
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('leadForm');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const origem = urlParams.get('utm_source') || 'direct';
+            const nomeCampanha = urlParams.get('utm_campaign') || 'organico';
+
+            const paisSelecionado = document.getElementById('pais').value;
+            const regiao = (paisSelecionado === 'BR' || paisSelecionado === 'MX') ? 'LATAM' : 'EUROPA';
+
+            const payload = {
+                nome: document.getElementById('nome').value,
+                email: document.getElementById('email').value,
+                telefone: document.getElementById('ddi').value + document.getElementById('telefone').value,
+                pais: paisSelecionado,
+                regiao: regiao,
+                utm: {
+                    origem: origem,
+                    nome_campanha: nomeCampanha
+                }
+            };
+
+            try {
+                const resposta = await fetch('http://127.0.0.1:8000/api/v1/leads/capture', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const dados = await resposta.json();
+                if (resposta.ok) {
+                    alert(`Lead cadastrado com sucesso! ID no Banco: ${dados.id_lead}`);
+                    form.reset();
+                } else {
+                    alert(`Erro: ${dados.detail}`);
+                }
+            } catch (erro) {
+                alert("Não foi possível conectar à API. Verifique se o uvicorn está rodando na porta 8000.");
+            }
+        });
+    </script>
+</body>
+
+</html>

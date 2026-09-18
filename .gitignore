@@ -1,0 +1,17 @@
+# Dependências e ambientes locais
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# Dados locais e arquivos enviados
+database.db
+img/uploads/
+
+# Arquivos do sistema/editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Instalador de uso único (não publicar)
+install.php
