@@ -87,3 +87,13 @@ Para produção, configure credenciais exclusivas de banco, HTTPS, backups e per
 - **Início:** 03/08/2026
 - **Conclusão:** 19/09/2026
 - **Carga estimada:** 114 horas
+
+## Landing page de conversão (`landing/`)
+
+A pasta [`landing/`](landing/) traz uma segunda versão, independente da principal: uma landing page focada em captação de leads, com banco **SQLite** embutido. O arquivo do banco é criado automaticamente, sem precisar de MySQL.
+
+- Três versões: Brasil (pt, LGPD), LATAM hispânica (es) e Europa (en, GDPR).
+- Formulário de leads com origem por UTM e rastreamento do funil.
+- Painel de KPIs: funil Lead → MQL → SQL → Cliente, CPL, CAC, ROI por canal, LATAM x Europa, campanhas, exportação CSV e dados simulados.
+
+Para rodar: `cd landing && php -S localhost:8080 router.php`. Os detalhes estão em [landing/README.md](landing/README.md).
