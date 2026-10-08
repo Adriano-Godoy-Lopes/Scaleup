@@ -91,6 +91,8 @@ h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); text-align: center; margin-bottom: 1
 .lead-form input, .lead-form select, .lead-form textarea { font: inherit; font-weight: 400; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px; background: #fafbfd; }
 .lead-form input:focus, .lead-form select:focus, .lead-form textarea:focus { outline: none; border-color: var(--primary); background: #fff; }
 .lead-form .invalid { border-color: #ef4444 !important; }
+.lead-form .check input.invalid { outline: 2px solid #ef4444; outline-offset: 2px; }
+.lead-form .check:has(.invalid) { color: #ef4444; }
 .lead-form .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .lead-form .check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; color: var(--muted); }
 .lead-form .check input { margin-top: 4px; }

@@ -58,6 +58,7 @@ const MARKETS = [
             ['Funciona para B2B e B2C?', 'Sim. Para B2B usamos LinkedIn e e-mail; para B2C, Meta Ads, Google e influenciadores locais.'],
         ],
         'footer' => 'Projeto acadêmico – estratégia baseada em hipóteses e dados simulados.',
+        'admin_link' => 'Painel',
     ],
     'es' => [
         'region' => 'LATAM', 'lang' => 'es', 'label' => 'LATAM (ES)', 'flag' => '🇲🇽',
@@ -113,6 +114,7 @@ const MARKETS = [
             ['¿Funciona para B2B y B2C?', 'Sí. En B2B usamos LinkedIn y e-mail; en B2C, Meta Ads, Google e influencers locales.'],
         ],
         'footer' => 'Proyecto académico – estrategia basada en hipótesis y datos simulados.',
+        'admin_link' => 'Panel',
     ],
     'eu' => [
         'region' => 'EUROPE', 'lang' => 'en', 'label' => 'Europe (EN)', 'flag' => '🇪🇺',
@@ -168,6 +170,7 @@ const MARKETS = [
             ['Does it work for B2B and B2C?', 'Yes. B2B relies on LinkedIn and e-mail; B2C on Meta Ads, Google and local creators.'],
         ],
         'footer' => 'Academic project – strategy based on hypotheses and simulated data.',
+        'admin_link' => 'Dashboard',
     ],
 ];
 

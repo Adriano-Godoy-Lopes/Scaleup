@@ -190,7 +190,7 @@ $ids = ['problemas', 'metodo', 'funil', 'mercados', 'kpis', 'contato'];
         <div class="footer-links">
             <a href="<?= e($whatsapp) ?>" target="_blank" rel="noopener">WhatsApp</a>
             <a href="<?= e($email) ?>">E-mail</a>
-            <a href="admin.php">Painel</a>
+            <a href="admin.php"><?= e($t['admin_link']) ?></a>
         </div>
     </div>
 </footer>
