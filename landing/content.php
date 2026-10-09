@@ -179,7 +179,7 @@ function current_market(): string
     $m = $_GET['m'] ?? $_SESSION['market'] ?? null;
     if (!$m || !isset(MARKETS[$m])) {
         $accept = strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '');
-        $m = str_starts_with($accept, 'es') ? 'es' : (str_starts_with($accept, 'en') ? 'eu' : 'br');
+        $m = strpos($accept, 'es') === 0 ? 'es' : (strpos($accept, 'en') === 0 ? 'eu' : 'br');
     }
     $_SESSION['market'] = $m;
     return $m;

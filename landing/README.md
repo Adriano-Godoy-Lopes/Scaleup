@@ -13,7 +13,7 @@ PHP puro com banco **SQLite embutido** (PDO): o arquivo `data/scaleup.sqlite` e 
 
 ## Como rodar
 
-Requisitos: PHP 8.1+ com `pdo_sqlite` (já vem no XAMPP/WAMP/Laragon e na maioria das hospedagens).
+Requisitos: PHP 7.4+ com `pdo_sqlite` (já vem no XAMPP/WAMP/Laragon e na maioria das hospedagens).
 
 ```bash
 php -S localhost:8080 router.php

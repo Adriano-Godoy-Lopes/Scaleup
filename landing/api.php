@@ -5,7 +5,7 @@ require_once __DIR__ . '/content.php';
 header('Content-Type: application/json; charset=utf-8');
 $action = $_GET['action'] ?? '';
 
-function respond(array $data, int $code = 200): never
+function respond(array $data, int $code = 200): void
 {
     http_response_code($code);
     echo json_encode($data, JSON_UNESCAPED_UNICODE);

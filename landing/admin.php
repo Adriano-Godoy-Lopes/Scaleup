@@ -7,7 +7,7 @@ const REGIONS = ['LATAM' => 'LATAM', 'EUROPE' => 'Europa'];
 $flash = $_SESSION['flash'] ?? null;
 unset($_SESSION['flash']);
 
-function redirect(?string $msg = null): never
+function redirect(?string $msg = null): void
 {
     if ($msg) $_SESSION['flash'] = $msg;
     header('Location: admin.php' . (isset($_GET['region']) ? '?region=' . urlencode($_GET['region']) : ''));
