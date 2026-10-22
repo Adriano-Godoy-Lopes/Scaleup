@@ -2,8 +2,9 @@
 require_once __DIR__ . '/config.php';
 
 /**
- * Banco de dados SQLite embutido: o arquivo é criado automaticamente
- * na primeira execução, junto com as tabelas e as campanhas iniciais.
+ * Conexão com o banco (MySQL do XAMPP ou SQLite, conforme DB_DRIVER em config.php).
+ * No MySQL, o banco e as tabelas são criados automaticamente no primeiro acesso
+ * (ou importe database/scaleup_landing.sql pelo phpMyAdmin).
  */
 function db(): PDO
 {
@@ -11,18 +12,45 @@ function db(): PDO
     if ($pdo) {
         return $pdo;
     }
-    if (!is_dir(dirname(DB_FILE))) {
-        mkdir(dirname(DB_FILE), 0775, true);
+    $options = [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ];
+    if (is_mysql()) {
+        try {
+            $pdo = new PDO('mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';charset=utf8mb4', DB_USER, DB_PASS, $options);
+        } catch (PDOException $ex) {
+            http_response_code(500);
+            exit('Não foi possível conectar ao MySQL (' . htmlspecialchars($ex->getMessage(), ENT_QUOTES, 'UTF-8') . '). '
+                . 'Verifique se o MySQL está iniciado no painel do XAMPP e os dados em config.php.');
+        }
+        $pdo->exec('CREATE DATABASE IF NOT EXISTS `' . DB_NAME . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $pdo->exec('USE `' . DB_NAME . '`');
+        $pdo->exec(file_get_contents(__DIR__ . '/database/tables_mysql.sql'));
+    } else {
+        if (!is_dir(dirname(DB_FILE))) {
+            mkdir(dirname(DB_FILE), 0775, true);
+        }
+        $pdo = new PDO('sqlite:' . DB_FILE, null, null, $options);
+        $pdo->exec('PRAGMA foreign_keys = ON');
+        migrate_sqlite($pdo);
     }
-    $pdo = new PDO('sqlite:' . DB_FILE);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    $pdo->exec('PRAGMA foreign_keys = ON');
-    migrate($pdo);
+    seed_campaigns($pdo);
     return $pdo;
 }
 
-function migrate(PDO $pdo): void
+function is_mysql(): bool
+{
+    return DB_DRIVER === 'mysql';
+}
+
+/** Expressão SQL de "agora", compatível com o banco em uso. */
+function sql_now(): string
+{
+    return is_mysql() ? 'NOW()' : "datetime('now')";
+}
+
+function migrate_sqlite(PDO $pdo): void
 {
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS leads (
@@ -70,7 +98,10 @@ function migrate(PDO $pdo): void
         CREATE INDEX IF NOT EXISTS idx_leads_source ON leads(source);
         CREATE INDEX IF NOT EXISTS idx_events_type ON events(type);
     ");
+}
 
+function seed_campaigns(PDO $pdo): void
+{
     if ((int)$pdo->query('SELECT COUNT(*) FROM campaigns')->fetchColumn() === 0) {
         $seed = $pdo->prepare('INSERT INTO campaigns (name, channel, source, region, budget, spent) VALUES (?,?,?,?,?,?)');
         foreach ([

@@ -55,8 +55,9 @@ switch ($action) {
             'region' => $t['region'], 'language' => $t['lang'], 'source' => $source,
             'medium' => $_SESSION['medium'] ?? null, 'campaign' => $_SESSION['campaign'] ?? null,
         ]);
+        $id = (int)db()->lastInsertId();
         track('lead', ['region' => $t['region'], 'language' => $t['lang'], 'source' => $source, 'label' => $market]);
-        respond(['ok' => true, 'id' => (int)db()->lastInsertId()]);
+        respond(['ok' => true, 'id' => $id]);
 
     default:
         respond(['ok' => false, 'error' => 'unknown_action'], 404);

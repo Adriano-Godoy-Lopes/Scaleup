@@ -55,17 +55,18 @@ function seed_demo(PDO $pdo): void
             }
         }
     }
-    $up = $pdo->prepare('UPDATE campaigns SET spent = spent + ? WHERE id = (SELECT id FROM campaigns WHERE region = ? AND source = ? ORDER BY id LIMIT 1)');
+    $up = $pdo->prepare('UPDATE campaigns SET spent = spent + ? WHERE id = ?');
     $add = $pdo->prepare('INSERT INTO campaigns (name, channel, source, region, budget, spent) VALUES (?,?,?,?,?,?)');
-    $find = $pdo->prepare('SELECT COUNT(*) FROM campaigns WHERE region = ? AND source = ?');
+    $find = $pdo->prepare('SELECT id FROM campaigns WHERE region = ? AND source = ? ORDER BY id LIMIT 1');
     foreach ($spend as $region => $bySrc) {
         foreach ($bySrc as $src => $v) {
             if ($v <= 0) continue;
             $find->execute([$region, $src]);
-            if ($find->fetchColumn()) $up->execute([round($v, 2), $region, $src]);
+            $id = $find->fetchColumn();
+            if ($id) $up->execute([round($v, 2), $id]);
             else $add->execute(["Simulação $src $region", ucfirst($src), $src, $region, round($v * 1.2, 2), round($v, 2)]);
         }
     }
-    $pdo->exec('UPDATE campaigns SET budget = MAX(budget, ROUND(spent * 1.15, 2))');
+    $pdo->exec('UPDATE campaigns SET budget = CASE WHEN budget < ROUND(spent * 1.15, 2) THEN ROUND(spent * 1.15, 2) ELSE budget END');
     $pdo->commit();
 }

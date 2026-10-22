@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($_POST['do'] ?? '') {
         case 'stage':
             $stage = array_key_exists($_POST['stage'] ?? '', STAGES) ? $_POST['stage'] : 'lead';
-            $pdo->prepare("UPDATE leads SET stage = ?, deal_value = ?, updated_at = datetime('now') WHERE id = ?")
+            $pdo->prepare('UPDATE leads SET stage = ?, deal_value = ?, updated_at = ' . sql_now() . ' WHERE id = ?')
                 ->execute([$stage, max(0, (float)($_POST['deal_value'] ?? 0)), (int)$_POST['id']]);
             redirect('Lead atualizado.');
         case 'delete':
@@ -78,7 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             seed_demo($pdo);
             redirect('Dados simulados gerados.');
         case 'reset':
-            $pdo->exec('DELETE FROM leads; DELETE FROM events; UPDATE campaigns SET spent = 0;');
+            $pdo->exec('DELETE FROM leads');
+            $pdo->exec('DELETE FROM events');
+            $pdo->exec('UPDATE campaigns SET spent = 0');
             redirect('Dados zerados.');
     }
     redirect();
